@@ -10,7 +10,11 @@ typedef struct arquivos {
 Arquivos* argumentosEntrada(int argc, char* argv[]);
 void contaTempoProcessador(double *utime, double *stime);
 int verificaArqVazio(FILE* arq);
-void imprimeSaida(double user_time, double system_time, int pos, FILE* arq);
+char* AlocaString(int tamanho);
+void liberaStrings(char* padrao, char* texto);
+void calculaTamanhoStrings(int* tamanhoPadrao, int* tamanhoTexto, FILE* arq);
+void imprimeTempo(double user_time, double system_time, FILE* arq);
+void imprimeCasamento(int pos, FILE* arq);
 void liberaArquivos(Arquivos *arq);
 
 #endif

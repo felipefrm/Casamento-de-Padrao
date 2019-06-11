@@ -43,6 +43,27 @@ void contaTempoProcessador(double *utime, double *stime){
   *stime = (double) resources.ru_stime.tv_sec + 1.e-6 * (double) resources.ru_stime.tv_usec;
 }
 
+
+void calculaTamanhoStrings(int* tamanhoPadrao, int* tamanhoTexto, FILE* arq){
+  while (fgetc(arq) != '\n')
+    (*tamanhoPadrao)++;
+  while (fgetc(arq) != EOF)
+    (*tamanhoTexto)++;
+  rewind(arq);
+}
+
+
+char* AlocaString(int tamanho){
+  char *str = malloc(sizeof(char)*tamanho);
+  return str;
+}
+
+void liberaStrings(char* padrao, char* texto){
+  free(padrao);
+  free(texto);
+}
+
+
 int verificaArqVazio(FILE* arq){
   int tamanho_arq;
   fseek (arq, 0, SEEK_END);               // aponta para o fim do arquivo com fseek()
@@ -54,14 +75,17 @@ int verificaArqVazio(FILE* arq){
   return 1;      // procedimentos
 }
 
-void imprimeSaida(double user_time, double system_time, int pos, FILE* arq){
+void imprimeTempo(double user_time, double system_time, FILE* arq){
+
+  fprintf(arq, "Tempo de execução:\n");
+  fprintf(arq, "%fs (tempo de usuário) + %fs (tempo de sistema) = %fs (tempo total)\n\n", user_time, system_time, user_time+system_time);
+}
+
+void imprimeCasamento(int pos, FILE* arq){
   if (pos != 0)
     fprintf(arq, "Casamento na posicao: %d\n", pos);
   else
     fprintf(arq, "Não há casamento.\n");
-
-  fprintf(arq, "Tempo de execução:\n");
-  fprintf(arq, "%fs (tempo de usuário) + %fs (tempo de sistema) = %fs (tempo total)\n\n", user_time, system_time, user_time+system_time);
 }
 
 
