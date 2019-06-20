@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <sys/resource.h>
+#include <string.h>
 #include "entradaSaida.h"
 
 Arquivos* argumentosEntrada(int argc, char* argv[]){
@@ -44,12 +45,18 @@ void contaTempoProcessador(double *utime, double *stime){
 }
 
 
-void calculaTamanhoStrings(int* tamanhoPadrao, int* tamanhoTexto, FILE* arq){
+int calculaTamanhoStrings(int* tamanhoPadrao, int* tamanhoTexto, FILE* arq){
   while (fgetc(arq) != '\n')
     (*tamanhoPadrao)++;
   while (fgetc(arq) != EOF)
     (*tamanhoTexto)++;
   rewind(arq);
+
+  if (*tamanhoPadrao == 0 || *tamanhoTexto == 0){
+    printf("Padrão ou texto sem conteúdo.\n");
+    return 0;
+  }
+  return 1;
 }
 
 
@@ -75,8 +82,20 @@ int verificaArqVazio(FILE* arq){
   return 1;      // procedimentos
 }
 
-void imprimeTempo(double user_time, double system_time, FILE* arq){
+void leituraStrings(char *padrao, int tamanhoPadrao, char *texto, int tamanhoTexto, FILE *arq){
 
+  fgets(padrao, tamanhoPadrao+2, arq); // le primeira linha até o \n
+  padrao[strcspn(padrao, "\n")] = '\0'; // procura no padrao pelo caractere '\n' e o troca por NULL
+
+  int i;
+  for (i=0; i<tamanhoTexto; i++)
+    texto[i] = fgetc(arq);
+  if (texto[i-1] == '\n')
+    texto[i-1] = '\0';
+}
+
+
+void imprimeTempo(double user_time, double system_time, FILE* arq){
   fprintf(arq, "Tempo de execução:\n");
   fprintf(arq, "%fs (tempo de usuário) + %fs (tempo de sistema) = %fs (tempo total)\n\n", user_time, system_time, user_time+system_time);
 }

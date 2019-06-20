@@ -5,13 +5,18 @@
 
 void ShiftAnd(char *texto, int tamanhoTexto, char *padrao, int tamanhoPadrao, FILE* arq){
 
+  if (tamanhoPadrao > tamanhoTexto){
+    fprintf(arq, "Não há casamento.\n");
+    return;
+  }
+
   int M[MAXCHAR], R = 0, flag = 0;
   for (int i = 0; i < MAXCHAR; i++)
     M[i] = 0;
   for (int i = 1; i <= tamanhoPadrao; i++)
     M[padrao[i-1] + 127] |= 1 << (tamanhoPadrao - i);
   for (int i = 0; i < tamanhoTexto; i++) {
-    R = (((R) >> 1) | (1 << (tamanhoPadrao - 1))) & M[texto[i] + 127];
+    R = ((R >> 1) | (1 << (tamanhoPadrao - 1))) & M[texto[i] + 127];
     if ((R & 1) != 0){
       flag = 1;
       fprintf(arq, "Casamento na posicao: %d\n", i - tamanhoPadrao + 2);
@@ -23,6 +28,11 @@ void ShiftAnd(char *texto, int tamanhoTexto, char *padrao, int tamanhoPadrao, FI
 
 
 void ShiftAndAproximado(char *texto, int tamanhoTexto, char *padrao, int tamanhoPadrao, int k, FILE* arq){
+
+  if (k > tamanhoPadrao+1){
+    k = tamanhoPadrao+1;
+    printf("Erro maior que o tamanho do padrão. Erro ajustado.\n", k);
+  }
 
   int M[MAXCHAR], i, j, Ri, Rant, Rnovo;
   int R[tamanhoPadrao + 1], flag = 0;
@@ -60,6 +70,11 @@ void ShiftAndAproximado(char *texto, int tamanhoTexto, char *padrao, int tamanho
 
 void BMH(char *texto, int tamanhoTexto, char *padrao, int tamanhoPadrao, FILE* arq) {
 
+  if (tamanhoPadrao > tamanhoTexto){
+    fprintf(arq, "Não há casamento.\n");
+    return;
+  }
+
   int i, j, k, d[MAXCHAR + 1], flag = 0;
   for (i = 0; i <= MAXCHAR; i++)// seta todos valores da tabela de deslocamneto para tamanhoPadrao
     d[i] = tamanhoPadrao;
@@ -86,6 +101,11 @@ void BMH(char *texto, int tamanhoTexto, char *padrao, int tamanhoPadrao, FILE* a
 
 
 void BMHS(char *texto, int tamanhoTexto, char *padrao, int tamanhoPadrao, FILE* arq) {
+
+  if (tamanhoPadrao > tamanhoTexto){
+    fprintf(arq, "Não há casamento.\n");
+    return;
+  }
 
   int i, j, k, d[MAXCHAR + 1], flag = 0;
   for (i = 0; i <= MAXCHAR; i++)
