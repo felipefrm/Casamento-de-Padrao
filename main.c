@@ -8,15 +8,13 @@
 void main(int argc, char *argv[]){
 
   Arquivos* arq = argumentosEntrada(argc, argv);
-  if (arq->flag && verificaArqVazio(arq->entrada)) {
+  int erro, tamanhoPadrao = 0, tamanhoTexto = 0;
+  if (arq->flag && calculaTamanhoStrings(&tamanhoPadrao, &tamanhoTexto, arq->padrao, arq->texto)) {
 
-    double utime_ant, utime_pos, stime_ant, stime_pos;
-    int erro, tamanhoPadrao = 0, tamanhoTexto = 0;
-    if(calculaTamanhoStrings(&tamanhoPadrao, &tamanhoTexto, arq->entrada)){
-
+      double utime_ant, utime_pos, stime_ant, stime_pos;
       char *padrao = AlocaString(tamanhoPadrao);
       char *texto = AlocaString(tamanhoTexto);
-      leituraStrings(padrao, tamanhoPadrao, texto, tamanhoTexto, arq->entrada);
+      leituraStrings(padrao, tamanhoPadrao, texto, tamanhoTexto, arq->padrao, arq->texto);
 
       printf("P: %d e %d\n", tamanhoPadrao, strlen(padrao));
       printf("%s\n", padrao);
@@ -72,7 +70,6 @@ void main(int argc, char *argv[]){
       imprimeTempo(utime_pos-utime_ant, stime_pos-stime_ant, arq->saida);
 
       liberaStrings(padrao, texto);
-    }
+      liberaArquivos(arq);
   }
-  liberaArquivos(arq);
 }

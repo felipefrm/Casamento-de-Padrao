@@ -11,15 +11,16 @@ void ShiftAnd(char *texto, int tamanhoTexto, char *padrao, int tamanhoPadrao, FI
     return;
 
 
-  long M[MAXCHAR], R = 0;
-  for (long i = 0; i < MAXCHAR; i++)
+  int M[MAXCHAR], R = 0;
+  for (int i = 0; i < MAXCHAR; i++)
     M[i] = 0;
-  for (long i = 1; i <= tamanhoPadrao; i++)
+  for (int i = 1; i <= tamanhoPadrao; i++)
     M[padrao[i-1] + 127] |= 1 << (tamanhoPadrao - i);
-  for (long i = 0; i < tamanhoTexto; i++) {
-    R = (((unsigned long)R >> 1) | (1 << (tamanhoPadrao - 1))) & M[texto[i] + 127];
+  for (int i = 0; i < tamanhoTexto; i++) {
+    R = ((R >> 1) | (1 << (tamanhoPadrao - 1))) & M[texto[i] + 127];
     if ((R & 1) != 0){
-      fprintf(arq, " %d", i - tamanhoPadrao + 2);
+      if (i - tamanhoPadrao + 2 > 0)
+        fprintf(arq, " %d", i - tamanhoPadrao + 2);
     }
   }
 }
@@ -59,7 +60,8 @@ void ShiftAndAproximado(char *texto, int tamanhoTexto, char *padrao, int tamanho
     }
 
     if ((Rnovo & 1) != 0)
-      fprintf(arq, " %d", i+1);
+      if (i+1 > tamanhoPadrao-1)
+        fprintf(arq, " %d", i+1);
   }
 }
 

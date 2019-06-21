@@ -10,16 +10,23 @@ Arquivos* argumentosEntrada(int argc, char* argv[]){
   Arquivos* arq = malloc(sizeof(Arquivos));   // armazena os ponteiros dos arquivos
   int opcao;
   arq->flag = 1;                              // passados por linha de comando em uma struct
-  if (argc < 5){
-    fprintf(stderr, "Use: ./tp4 -i [ARQUIVO DE ENTRADA DE DADOS] -o [ARQUIVO DE SAIDA]\n");
+  if (argc < 6){
+    fprintf(stderr, "Use: ./tp4 -p [ARQUIVO CONTENDO O PADRÃO] -t [ARQUIVO CONTENDO O TEXTO] -o [ARQUIVO DE SAIDA]\n");
     arq->flag = 0;
     return arq;
   }
-  while((opcao = getopt(argc, argv, "i:o:"))!= -1) { // recebe-se os argumentos por meio
+  while((opcao = getopt(argc, argv, "p:t:o:"))!= -1) { // recebe-se os argumentos por meio
                                                      // da funcao getopt()
     switch(opcao) {
-      case 'i':
-        if(!(arq->entrada = fopen(optarg, "r"))) {
+      case 'p':
+        if(!(arq->padrao = fopen(optarg, "r"))) {
+          fprintf(stderr, "Erro na abertura do arquivo.\n");
+          arq->flag = 0;
+          return arq;
+        }
+        break;
+      case 't':
+        if(!(arq->texto = fopen(optarg, "r"))) {
           fprintf(stderr, "Erro na abertura do arquivo.\n");
           arq->flag = 0;
           return arq;
@@ -45,15 +52,16 @@ void contaTempoProcessador(double *utime, double *stime){
 }
 
 
-int calculaTamanhoStrings(int* tamanhoPadrao, int* tamanhoTexto, FILE* arq){
-  while (fgetc(arq) != '\n')
+int calculaTamanhoStrings(int* tamanhoPadrao, int* tamanhoTexto, FILE* padrao, FILE *texto){
+  while (fgetc(padrao) != EOF)
     (*tamanhoPadrao)++;
-  while (fgetc(arq) != EOF)
+  while (fgetc(texto) != EOF)
     (*tamanhoTexto)++;
-  rewind(arq);
+  rewind(padrao);
+  rewind(texto);
 
   if (*tamanhoPadrao == 0 || *tamanhoTexto == 0){
-    printf("Padrão ou texto sem conteúdo.\n");
+    printf("Arquivo de padrão ou texto sem conteúdo.\n");
     return 0;
   }
   return 1;
@@ -71,30 +79,37 @@ void liberaStrings(char* padrao, char* texto){
 }
 
 
-int verificaArqVazio(FILE* arq){
+int verificaArqVazio(FILE* padrao, FILE* texto){
+
   int tamanho_arq;
-  fseek (arq, 0, SEEK_END);               // aponta para o fim do arquivo com fseek()
-  if((tamanho_arq = ftell (arq)) == 0){   // retorna o valor da posição do ponteiro com ftell()
-    fprintf(stderr, "O arquivo de entrada está vazio!\n");
+  fseek (padrao, 0, SEEK_END);               // aponta para o fim do arquivo com fseek()
+  if((tamanho_arq = ftell (padrao)) == 0){   // retorna o valor da posição do ponteiro com ftell()
+    fprintf(stderr, "O arquivo do padrão está vazio!\n");
     return 0;
   }
-  rewind(arq);   // retorna o ponteiro para o inicio do arquivo, para os proximos
+  fseek (texto, 0, SEEK_END);               // aponta para o fim do arquivo com fseek()
+  if((tamanho_arq = ftell (texto)) == 0){   // retorna o valor da posição do ponteiro com ftell()
+    fprintf(stderr, "O arquivo do texto está vazio!\n");
+    return 0;
+  }
+  rewind(texto);
+  rewind(padrao);   // retorna o ponteiro para o inicio do arquivo, para os proximos
   return 1;      // procedimentos
 }
 
-void leituraStrings(char *padrao, int tamanhoPadrao, char *texto, int tamanhoTexto, FILE *arq){
-
-  // for (i=0; i<tamanhoPadrao; i++)
-  //   padrao[i] = fgetc(arq);
-  // fgetc(arq); // le o '\n'
-  fgets(padrao, tamanhoPadrao+2, arq); // le primeira linha até o \n
-  padrao[strcspn(padrao, "\n")] = '\0'; // procura no padrao pelo caractere '\n' e o troca por NULL
+void leituraStrings(char *padrao, int tamanhoPadrao, char *texto, int tamanhoTexto, FILE *arq_padrao, FILE *arq_texto){
 
   int i;
-  for (i=0; i<tamanhoTexto-1; i++)
-    texto[i] = fgetc(arq);
+  for (i=0; i<tamanhoPadrao; i++)
+    padrao[i] = fgetc(arq_padrao);
+  if (padrao[i-1] == '\n')
+    padrao[i-1] = '\0';
+
+  for (i=0; i<tamanhoTexto; i++)
+    texto[i] = fgetc(arq_texto);
   if (texto[i-1] == '\n')
     texto[i-1] = '\0';
+
 }
 
 
@@ -111,7 +126,8 @@ void imprimeCasamento(int pos, FILE* arq){
 
 
 void liberaArquivos(Arquivos *arq){
-  fclose(arq->entrada);
+  fclose(arq->padrao);
+  fclose (arq->texto);
   fclose(arq->saida);
   free(arq);
 }
