@@ -84,11 +84,14 @@ int verificaArqVazio(FILE* arq){
 
 void leituraStrings(char *padrao, int tamanhoPadrao, char *texto, int tamanhoTexto, FILE *arq){
 
+  // for (i=0; i<tamanhoPadrao; i++)
+  //   padrao[i] = fgetc(arq);
+  // fgetc(arq); // le o '\n'
   fgets(padrao, tamanhoPadrao+2, arq); // le primeira linha até o \n
   padrao[strcspn(padrao, "\n")] = '\0'; // procura no padrao pelo caractere '\n' e o troca por NULL
 
   int i;
-  for (i=0; i<tamanhoTexto; i++)
+  for (i=0; i<tamanhoTexto-1; i++)
     texto[i] = fgetc(arq);
   if (texto[i-1] == '\n')
     texto[i-1] = '\0';
@@ -96,8 +99,7 @@ void leituraStrings(char *padrao, int tamanhoPadrao, char *texto, int tamanhoTex
 
 
 void imprimeTempo(double user_time, double system_time, FILE* arq){
-  fprintf(arq, "Tempo de execução:\n");
-  fprintf(arq, "%fs (tempo de usuário) + %fs (tempo de sistema) = %fs (tempo total)\n\n", user_time, system_time, user_time+system_time);
+  fprintf(arq, "\n%fs (tempo de usuário) + %fs (tempo de sistema) = %fs (tempo total)\n\n", user_time, system_time, user_time+system_time);
 }
 
 void imprimeCasamento(int pos, FILE* arq){
