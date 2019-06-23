@@ -6,7 +6,7 @@
 ```
   & make
 ```
-2. Execute o programa ./tp4 com o argumento -p seguido do nome do arquivo de padrﾃ｣o, -t seguido do nome do arquivo de texto e -o seguido do nome do arquivo de saída:
+2. Execute o programa ./tp4 com o argumento -p seguido do nome do arquivo de padrão, -t seguido do nome do arquivo de texto e -o seguido do nome do arquivo de saída:
 ```
   & ./tp -p [ARQUIVO DO PADRÃO] -t [ARQUIVO DO TEXTO] -o [ARQUIVO DE SAÍDA]
 ```
