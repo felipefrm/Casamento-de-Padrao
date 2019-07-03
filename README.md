@@ -1,5 +1,10 @@
 # Casamento de Padrão
 
+## Resumo
+
+Este trabalho prático consiste no estudo dos principais algoritmos de processamento de caracteres. São eles: Shift-And para casamento exato, Boyer-Moore-Horspool (BMH), Boyer-Moore-Horspool-Sunday (BMHS), Shift-And para casamento aproximado, além do algoritmo de uma versão do BMH implementado com programação paralela com o uso de pthread.  
+
+
 ## Passo-a-passo para execução do programa 
 
 1. Compile o programa com o utilitário makefile:
