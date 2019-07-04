@@ -1,7 +1,7 @@
 #ifndef CASAMENTO
 #define CASAMENTO
 
-#define MAXCHAR 256
+#define MAXCHAR 256   // quantidade de caractere na tabela ASCII
 
 void ShiftAnd(char *texto, int tamanhoTexto, char *padrao, int tamanhoPadrao, FILE* arq);
 void ShiftAndAproximado(char *texto, int tamanhoTexto, char *padrao, int tamanhoPadrao, int k, FILE* arq);

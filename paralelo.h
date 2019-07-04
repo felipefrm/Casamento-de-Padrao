@@ -1,8 +1,8 @@
+#include "casamento.h"
 #ifndef PARALELO
 #define PARALELO
 
 #define NTHREADS 4
-#define MAXCHAR 256
 
 typedef struct {
 	int inicio;
